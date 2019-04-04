@@ -2,6 +2,7 @@ package org.insa.graph;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -198,10 +199,9 @@ public class Path {
      * 
      * @return true if the path is valid, false otherwise.
      * 
-     * @deprecated Need to be implemented.
      */
     public boolean isValid() {
-        // TODO:
+        if (this.isEmpty()) return true;
         return false;
     }
 
@@ -210,12 +210,18 @@ public class Path {
      * 
      * @return Total length of the path (in meters).
      * 
-     * @deprecated Need to be implemented.
+     *
      */
     public float getLength() {
-        // TODO:
-        return 0;
+    	float length=0;
+    	
+    	Iterator<Arc> it = arcs.iterator();
+    	while(it.hasNext()) {
+    		length+=it.next().getLength();
+    	}
+        return length;
     }
+    
 
     /**
      * Compute the time required to travel this path if moving at the given speed.
@@ -225,11 +231,18 @@ public class Path {
      * @return Time (in seconds) required to travel this path at the given speed (in
      *         kilometers-per-hour).
      * 
-     * @deprecated Need to be implemented.
      */
     public double getTravelTime(double speed) {
-        // TODO:
-        return 0;
+        double speed_m_s;
+        float length_path;
+        double time;
+        
+        speed_m_s=speed/3.6;
+        length_path=this.getLength();
+        time=length_path/speed_m_s;       
+        
+        
+        return time;
     }
 
     /**
@@ -237,12 +250,17 @@ public class Path {
      * on every arc.
      * 
      * @return Minimum travel time to travel this path (in seconds).
-     * 
-     * @deprecated Need to be implemented.
+     *
      */
     public double getMinimumTravelTime() {
-        // TODO:
-        return 0;
+        double time=0;
+    	
+    	Iterator<Arc> it = arcs.iterator();
+    	while(it.hasNext()) {
+    		time+=it.next().getMinimumTravelTime();
+    	}
+        
+        return time;
     }
 
 }
