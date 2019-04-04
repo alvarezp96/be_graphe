@@ -201,8 +201,31 @@ public class Path {
      * 
      */
     public boolean isValid() {
-        if (this.isEmpty()) return true;
-        return false;
+    	
+    	boolean valid=false;
+    	
+        if (this.isEmpty()) valid=true;
+        
+        else if((this.origin!=null)&&(this.arcs==null)) valid=true;
+        
+        else {
+        	
+        	valid=true;
+        	Iterator<Arc> it = arcs.iterator();
+        	Node precedent= this.origin; //premier node
+        	Arc arc_actuel=null;
+        	
+        	while(it.hasNext()) {
+        		arc_actuel=it.next();
+        		if(arc_actuel.getOrigin()==precedent) {  //si l'arc a comme origin l'origine la destination de l'arc precedent
+        			precedent = arc_actuel.getDestination(); //on obtient la destination de l'arc aui sera le prochain origin
+        		}
+        		else valid=false;
+        	}
+        	
+        }
+        
+        return valid;
     }
 
     /**
