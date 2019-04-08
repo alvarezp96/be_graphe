@@ -31,12 +31,38 @@ public class Path {
      * @throws IllegalArgumentException If the list of nodes is not valid, i.e. two
      *         consecutive nodes in the list are not connected in the graph.
      * 
-     * @deprecated Need to be implemented.
+     * 
      */
     public static Path createFastestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
-        List<Arc> arcs = new ArrayList<Arc>();
-        // TODO:
+    	List<Arc> arcs = new ArrayList<Arc>();
+    	
+    	if(nodes.size()==0)
+    		return new Path(graph);
+    	if(nodes.size()==1)
+    		return new Path(graph,nodes.get(0));			
+    
+        for(int i=0;i<nodes.size()-1;i++)
+        {
+        	double min_time=100000000;
+    		int indice_arc=100000;
+        	List<Arc> arcs_possibles =nodes.get(i).getSuccessors();
+        	for(int j=0;j<arcs_possibles.size();j++)
+        	{
+        		
+        		if(nodes.get(i+1).compareTo(arcs_possibles.get(j).getDestination())==0)
+        		{
+        			if(arcs_possibles.get(j).getMinimumTravelTime() < min_time)
+        			{
+        				indice_arc=j;
+        				min_time=arcs_possibles.get(j).getMinimumTravelTime();
+        			}
+        		}
+        	}
+    		if(min_time==100000000)
+    			throw new IllegalArgumentException();
+    		arcs.add(arcs_possibles.get(indice_arc));
+        }
         return new Path(graph, arcs);
     }
 
@@ -52,12 +78,39 @@ public class Path {
      * @throws IllegalArgumentException If the list of nodes is not valid, i.e. two
      *         consecutive nodes in the list are not connected in the graph.
      * 
-     * @deprecated Need to be implemented.
+     * 
      */
     public static Path createShortestPathFromNodes(Graph graph, List<Node> nodes)
             throws IllegalArgumentException {
         List<Arc> arcs = new ArrayList<Arc>();
-        // TODO:
+        
+    	if(nodes.size()==0)
+    		return new Path(graph);
+    	if(nodes.size()==1)
+    		return new Path(graph,nodes.get(0));			
+    
+        for(int i=0;i<nodes.size()-1;i++)
+        {
+        	List<Arc> arcs_possibles =nodes.get(i).getSuccessors();
+        	double min_dist=100000000;
+    		int indice_arc=100000;
+        	for(int j=0;j<arcs_possibles.size();j++)
+        	{
+        		
+        		if(nodes.get(i+1).compareTo(arcs_possibles.get(j).getDestination())==0)
+        		{
+        			if(arcs_possibles.get(j).getLength() < min_dist)
+        			{
+        				indice_arc=j;
+        				min_dist=arcs_possibles.get(j).getLength();
+        			}
+        		}
+        		
+        	}
+        	if(min_dist==100000000)
+    			throw new IllegalArgumentException();
+    		arcs.add(arcs_possibles.get(indice_arc));
+        }
         return new Path(graph, arcs);
     }
 
