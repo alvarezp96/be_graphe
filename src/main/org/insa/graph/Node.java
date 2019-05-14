@@ -1,6 +1,6 @@
 package org.insa.graph;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.Collections;
 import java.util.List;
 

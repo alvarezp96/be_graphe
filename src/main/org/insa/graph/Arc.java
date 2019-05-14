@@ -1,6 +1,6 @@
 package org.insa.graph;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>

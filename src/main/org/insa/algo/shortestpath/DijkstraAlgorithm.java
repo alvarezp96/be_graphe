@@ -1,12 +1,11 @@
 package org.insa.algo.shortestpath;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.Arrays;
 import java.util.List;
 
-import org.insa.graph.Arc;
-import org.insa.graph.Graph;
-import org.insa.graph.Node;
+import org.insa.graph.*;
+import org.insa.algo.AbstractSolution.Status;
 import org.insa.algo.utils.*;
 
 public class DijkstraAlgorithm extends ShortestPathAlgorithm {
@@ -27,78 +26,99 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 
     // Initialize array of distances.
     Label[] liste_labels = new Label[nbNodes];
-    for(int i=0;i<nbNodes;i++)
-    	liste_labels[i].setCout(Double.POSITIVE_INFINITY);
+    
+    for(int i=0;i<nbNodes;i++) {
+    	liste_labels[i]=new Label(graph.get(i));
+    }
+    
    liste_labels[data.getOrigin().getId()].setCout(0);
  
    BinaryHeap<Label> Tas=new BinaryHeap<Label>();
    
+    Label deb = new Label(data.getOrigin(),true);
+	liste_labels[deb.getSommet_courant().getId()] = deb;
+	deb.setinTas();
+	deb.setCout(0);
+	Tas.insert(deb);
+   
+   
    //Initialisation marque
-   for(int i=0;i<nbNodes;i++)
-   		liste_labels[i].setMarque(false);
-   liste_labels[data.getOrigin().getId()].setMarque(true);
+   
+   liste_labels[data.getOrigin().getId()].setMarque();
    
     // Notify observers about the first event (origin processed).
     notifyOriginProcessed(data.getOrigin());
         
     
     //Creation liste arcs
-    Label label_cour;
-    List<Arc> list_arcs = new ArrayList<>();
-    list_arcs=sommet_cour.getSuccessors();
+    
+    Arc[] list_arcs = new Arc[nbNodes];
+    
+    List<Arc> succeseurs;
+    
     
     boolean found=false;
-    //boucle 
-    while(!found)
-    {
-    		
-    	label_cour=Tas.findMin();
-    	Tas.deleteMin();
-    	label_cour.setMarque(true);
-    	for(Arc arc: label_cour.getSommet_courant().getSuccessors())
-    	{
-    		if(!label.isMarque())
-    	}
-    }
     
     
+    /* Tant qu'il existe des sommets non marqués */
+	while(!Tas.isEmpty() && !found){ 
+		Label label_cour;
+		label_cour=Tas.deleteMin();
+		notifyNodeMarked(label_cour.getSommet_courant());
+		label_cour.setMarque();
+		
+		if (label_cour.getSommet_courant() == data.getDestination()) {
+			found = true;
+		}
     
-    
-    
-    
-    list_arcs=sommet_cour.getSuccessors();
-    
-    for(int i=0;i<liste_labels.length;i++)
-    {
-    	for(int j=0;j<list_arcs.size();j++)
-    	{
-    		if(list_arcs.get(j).getDestination()==liste_labels[i].getSommet_courant())
-    		{
-    			//calcul du cout pere
-    			Node pere = liste_labels[i].getPere();
-    			double cout_pere=0;
-    			for(int k=0;k<liste_labels.length;k++)
-    			{
-    				if(liste_labels[i].getSommet_courant()==pere)
-    					cout_pere=liste_labels[i].getCout();
-    			}
-    			//Modification du cout et du pere
-    			if(list_arcs.get(j).getLength()+cout_pere<liste_labels[i].getCout())
-    			{
-    				liste_labels[i].setCout(list_arcs.get(j).getLength()+liste_labels[i].getCout());
-    				liste_labels[i].setPere(pere);
-    			}
-    			
-    		}
-    	}
-    	
-    }
-    //Recherche du cout minimum
-    
-    //Modification sommet courant et marque
-    
-    sommet_cour=liste_labels[i].getSommet_courant();
-    
+		succeseurs = label_cour.getSommet_courant().getSuccessors();
+		for(Arc arc_cour : succeseurs) {
+			boolean change = false;
+		
+			if(!liste_labels[arc_cour.getDestination().getId()].isMarque())
+			{
+				double cout1=liste_labels[arc_cour.getDestination().getId()].getCout();
+				double cout2=label_cour.getCout()+ arc_cour.getLength();
+				//cout min
+				
+				if(cout2<cout1) {
+					liste_labels[arc_cour.getDestination().getId()].setCout(cout2);
+					change=true;
+					}
+			if(change) {
+				try {
+					Tas.remove(liste_labels[arc_cour.getDestination().getId()]);
+				}
+				catch (ElementNotFoundException e) {}
+			}
+			
+			Tas.insert(liste_labels[arc_cour.getDestination().getId()]);
+			liste_labels[arc_cour.getDestination().getId()].setPere(label_cour.getSommet_courant(),arc_cour);
+				
+				
+			}
+		}
+	}
+	
+	if (list_arcs[data.getDestination().getId()] == null) {
+		solution = new ShortestPathSolution(data, Status.INFEASIBLE);
+	} else {
+		
+		notifyDestinationReached(data.getDestination());
+
+		ArrayList<Arc> arcs = new ArrayList<>();
+		Arc arc = list_arcs[data.getDestination().getId()];
+
+		while (arc != null) {
+			arcs.add(arc);
+			arc = list_arcs[arc.getOrigin().getId()];
+		}
+
+		Collections.reverse(arcs);
+
+		solution = new ShortestPathSolution(data, Status.OPTIMAL, new Path(graph, arcs));
+
+	}  
     
     return solution;
     }
