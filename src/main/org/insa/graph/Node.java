@@ -155,5 +155,7 @@ public final class Node implements Comparable<Node> {
     public int compareTo(Node other) {
         return Integer.compare(getId(), other.getId());
     }
-
+    public Iterator<Arc> iterator(){
+    	return Collections.unmodifiableList(this.successors).iterator();
+    }
 }

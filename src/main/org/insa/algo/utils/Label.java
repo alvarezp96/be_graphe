@@ -3,12 +3,12 @@ package org.insa.algo.utils;
 import org.insa.graph.*;
 
 public class Label implements Comparable<Label>{
-	private Node sommet_courant;
-	private boolean marque;
-	private double cout;
-	private Node pere;
-	private Arc arc;
-	private boolean inTas;
+	protected Node sommet_courant;
+	protected boolean marque;
+	protected double cout;
+	protected Node pere;
+	protected Arc arc;
+	protected boolean inTas;
 	
 	public Label(Node noeud) {
 		this.sommet_courant=noeud;
@@ -18,14 +18,7 @@ public class Label implements Comparable<Label>{
 		this.arc=null;
 		this.inTas=false;
 		}
-	public Label(Node noeud,boolean origin) {
-		this.sommet_courant=null;
-		this.marque=false;
-		this.cout=0;
-		this.pere = null;
-		this.arc=null;
-		this.inTas=false;
-	}
+
 		
 		public Node getSommet_courant() {
 			return sommet_courant;
@@ -46,6 +39,14 @@ public class Label implements Comparable<Label>{
 		public double getCout() {
 			return cout;
 		}
+		
+		public double getTotalCost() {
+			return this.cout;
+		}
+		
+		public void setTotalCost(double cout) {
+			this.cout = cout;
+		}
 
 		public void setCout(double cout) {
 			this.cout = cout;
@@ -53,6 +54,9 @@ public class Label implements Comparable<Label>{
 
 		public Node getPere() {
 			return pere;
+		}
+		public Arc getArc() {
+			return arc;
 		}
 
 		public void setPere(Node pere, Arc arc) {
@@ -73,10 +77,10 @@ public class Label implements Comparable<Label>{
 
 		public int compareTo(Label autre) {
 			int resultat;
-			if (this.getCout() < autre.getCout()) {
+			if (this.getTotalCost() < autre.getTotalCost()) {
 				resultat = -1;
 			}
-			else if (this.getCout() == autre.getCout()) {
+			else if (this.getTotalCost() == autre.getTotalCost()) {
 				resultat = 0;
 			}
 			else {
