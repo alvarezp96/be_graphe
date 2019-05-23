@@ -13,7 +13,7 @@ public class LabelStar extends Label implements Comparable<Label>{
 	}
 	
 	@Override
-	public void setTotalCost(double cout) {
+	public void setCout(double cout) {
 		this.cout_total = cout+this.sommet_courant.getPoint().distanceTo(data.getDestination().getPoint());
 	}
 	
