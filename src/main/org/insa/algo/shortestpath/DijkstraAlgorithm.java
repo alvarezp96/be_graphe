@@ -46,7 +46,7 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 	deb.setCout(0);
    
    
-   //Initialisation marq			System.out.println("Ok");ue
+   //Initialisation marque
    
    liste_labels[data.getOrigin().getId()].setMarque();
    
@@ -58,6 +58,11 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
     List<Arc> succeseurs;
     	
     boolean found=false;
+    
+    if(data.getOrigin()==data.getDestination())
+    {
+    	found=true;
+    }
     
     
     /* Tant qu'il existe des sommets non marqués */
@@ -72,11 +77,15 @@ public class DijkstraAlgorithm extends ShortestPathAlgorithm {
 		succeseurs = label_cour.getSommet_courant().getSuccessors();
 		for(Arc arc_cour : succeseurs) {
 			Label label_d=liste_labels[arc_cour.getDestination().getId()];
+			
+			if(!data.isAllowed(arc_cour))
+				continue;
+			
 			if(!label_d.isMarque())
 			{
 				notifyNodeReached(label_d.getSommet_courant());
 				double cout1=label_d.getCout();
-				double cout2=label_cour.getCout()+ arc_cour.getLength();
+				double cout2=label_cour.getCout()+ data.getCost(arc_cour);
 				//cout min
 				
 				if(cout2<cout1) {

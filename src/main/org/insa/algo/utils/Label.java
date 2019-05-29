@@ -77,10 +77,10 @@ public class Label implements Comparable<Label>{
 
 		public int compareTo(Label autre) {
 			int resultat;
-			if (this.getCout() < autre.getCout()) {
+			if (this.getTotalCost() < autre.getTotalCost()) {
 				resultat = -1;
 			}
-			else if (this.getCout() == autre.getCout()) {
+			else if (this.getTotalCost() == autre.getTotalCost()) {
 				resultat = 0;
 			}
 			else {
