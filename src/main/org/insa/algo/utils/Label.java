@@ -18,7 +18,6 @@ public class Label implements Comparable<Label>{
 		this.arc=null;
 		this.inTas=false;
 		}
-
 		
 		public Node getSommet_courant() {
 			return sommet_courant;
@@ -72,8 +71,6 @@ public class Label implements Comparable<Label>{
 		public boolean getinTas() {
 			return this.inTas;
 		}
-		
-		
 
 		public int compareTo(Label autre) {
 			int resultat;
@@ -88,8 +85,6 @@ public class Label implements Comparable<Label>{
 			}
 			return resultat;
 		}
-		
-
 	}
 
 
