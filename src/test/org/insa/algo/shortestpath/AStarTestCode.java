@@ -1,6 +1,6 @@
 package org.insa.algo.shortestpath;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -88,5 +88,43 @@ public class AStarTestCode {
 		}
 		System.out.println();
 		System.out.println();
+	}
+	public void testScenarioSansOraclePerf(String mapName, int origine, int destination) throws Exception {
+
+		double costFastestSolutionInTime = Double.POSITIVE_INFINITY;
+		double costFastestSolutionInDistance = Double.POSITIVE_INFINITY;
+		double costShortestSolutionInTime = Double.POSITIVE_INFINITY;
+		double costShortestSolutionInDistance = Double.POSITIVE_INFINITY;
+
+		// Create a graph reader.
+		GraphReader reader = new BinaryGraphReader(
+				new DataInputStream(new BufferedInputStream(new FileInputStream(mapName))));
+
+		// Read the graph.
+		Graph graph = reader.read();
+
+		/** Recherche du chemin le plus rapide **/
+		ArcInspector arcInspectorDijkstra = ArcInspectorFactory.getAllFilters().get(2);
+		ShortestPathData data = new ShortestPathData(graph, graph.get(origine),graph.get(destination), arcInspectorDijkstra);
+		AStarAlgorithm D = new AStarAlgorithm(data);
+		/* Recuperation de la solution de Dijkstra */
+		ShortestPathSolution solution = D.run();
+		/* Calcul du cout de la solution (en temps et en distance) */
+		costFastestSolutionInTime = solution.getPath().getMinimumTravelTime();
+		costFastestSolutionInDistance = solution.getPath().getLength();
+			
+		/** Recherche du chemin le plus court **/
+		arcInspectorDijkstra = ArcInspectorFactory.getAllFilters().get(0);
+		data = new ShortestPathData(graph, graph.get(origine),graph.get(destination), arcInspectorDijkstra);
+		D = new AStarAlgorithm(data);
+		/* Recuperation de la solution de Dijkstra */
+		solution = D.run();		
+		/* Calcul du cout de la solution (en temps et en distance) */
+		costShortestSolutionInTime = solution.getPath().getMinimumTravelTime();
+		costShortestSolutionInDistance = solution.getPath().getLength();
+		/* Verifie que le temps du chemin le plus rapide est inferieur au temps du chemin le plus court */
+		assertTrue(costFastestSolutionInTime <= costShortestSolutionInTime);
+		/* Et verifie que la distance du chemin le plus rapide est superieur a la distance du chemin le plus court */
+		assertTrue(costFastestSolutionInDistance >= costShortestSolutionInDistance);
 	}
 }
